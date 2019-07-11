@@ -31,7 +31,10 @@ class WikiHowViewSet(viewsets.ViewSet):
 
     def list(self, request):
         url_ = request.GET.get('url')
+        # try:
         content = wiki_how_content(url_)
+        # except:
+        #     content = "Wiki How not found."
 
         ans = {'status': status.HTTP_200_OK, 'item': 'GET', 'Name': content}
         return Response(ans)
