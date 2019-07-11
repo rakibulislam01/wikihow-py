@@ -7,9 +7,6 @@ from bs4 import BeautifulSoup
 from .models import Content
 
 
-# str_url = "Fill-a-Propane-Tank"
-
-
 def wiki_how_content(str_):
     global final_text
     start_time = datetime.datetime.now()
@@ -57,14 +54,13 @@ def wiki_how_content(str_):
             text4.append(text)
 
         _text = list(filter(None, text4))
-        # print(_text)
         final_text.append(_text)
-        # print(final_text)
     end_time = datetime.datetime.now()
     difference_time = end_time - start_time
-    print(difference_time.total_seconds())
-    data_content = Content.objects.create(url_text=str_, content=final_text, scrape_time=difference_time)
+    s_time = difference_time.total_seconds()
+    data_content = Content.objects.create(url_text=str_, content=final_text, scrape_time=s_time)
     data_content.save()
     return final_text
 
+# str_url = "Fill-a-Propane-Tank"
 # print("Time      :", timeit.Timer('f(str_url)', 'from __main__ import str_url,wiki_how_content as f').timeit(1))
