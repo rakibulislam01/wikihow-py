@@ -4,20 +4,24 @@ import timeit
 import urllib.request
 
 from bs4 import BeautifulSoup
+
 from .models import Content
+from .wiki_how_search import search
 
 
 def wiki_how_content(str_):
-    global final_text
+    global final_text, url, page
     start_time = datetime.datetime.now()
 
     # url = "https://www.wikihow.com/Fill-a-Propane-Tank"
     url = "https://www.wikihow.com/" + str_
-    page = urllib.request.urlopen(url)  # conntect to website
     try:
+        page = urllib.request.urlopen(url)  # connect to website
+    except:
+        item = search(str_)
+        url = item
         page = urllib.request.urlopen(url)
-    except ConnectionError as e:
-        print("An error occured.")
+        # print("An error occured.")
 
     soup = BeautifulSoup(page, 'html.parser')
 
@@ -55,12 +59,18 @@ def wiki_how_content(str_):
 
         _text = list(filter(None, text4))
         final_text.append(_text)
+
     end_time = datetime.datetime.now()
     difference_time = end_time - start_time
     s_time = difference_time.total_seconds()
-    data_content = Content.objects.create(url_text=str_, content=final_text, scrape_time=s_time)
-    data_content.save()
-    return final_text
+
+    if final_text:
+        data_content = Content.objects.create(url_text=str_, content=final_text, scrape_time=s_time)
+        data_content.save()
+        return final_text
+    else:
+        final_text = None
+        return final_text
 
 # str_url = "Fill-a-Propane-Tank"
 # print("Time      :", timeit.Timer('f(str_url)', 'from __main__ import str_url,wiki_how_content as f').timeit(1))

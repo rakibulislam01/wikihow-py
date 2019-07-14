@@ -19,9 +19,9 @@ def search(search_term):
     list_ = []
     links = soup.findAll('a', attrs={'class': "result_link"})
     for link in links:
-        url = "http:" + link.get('href')
+        url = link.get('href')
         list_.append(url)
-    return list_
+    return list_[0]
 
 
 # while True:
