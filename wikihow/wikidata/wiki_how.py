@@ -1,6 +1,5 @@
 import datetime
 import re
-import timeit
 import urllib.request
 
 from bs4 import BeautifulSoup
@@ -14,14 +13,21 @@ def wiki_how_content(str_):
     start_time = datetime.datetime.now()
 
     # url = "https://www.wikihow.com/Fill-a-Propane-Tank"
-    url = "https://www.wikihow.com/" + str_
+    url_l = "https://www.wikihow.com/" + str_
+    url = url_l.lower()
     try:
         page = urllib.request.urlopen(url)  # connect to website
     except:
         item = search(str_)
-        url = item
+        url = item.lower()
         page = urllib.request.urlopen(url)
-        # print("An error occured.")
+        print("An error occured.")
+
+    # try:
+    #     content_q = get_object_or_404(Content, url=url)
+    #     content = content_q.content
+    #     return content
+    # except:
 
     soup = BeautifulSoup(page, 'html.parser')
 
@@ -65,7 +71,7 @@ def wiki_how_content(str_):
     s_time = difference_time.total_seconds()
 
     if final_text:
-        data_content = Content.objects.create(url_text=str_, content=final_text, scrape_time=s_time)
+        data_content = Content.objects.create(url_text=str_, content=final_text, scrape_time=s_time, url=url)
         data_content.save()
         return final_text
     else:
