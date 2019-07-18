@@ -8,27 +8,20 @@ from .models import Content
 from .wiki_how_search import search
 
 
-def wiki_how_content(str_):
+def wiki_how_content(str_, user_text):
     global final_text, url, page
     start_time = datetime.datetime.now()
-
-    # url = "https://www.wikihow.com/Fill-a-Propane-Tank"
-    url_l = "https://www.wikihow.com/" + str_
-    url = url_l.lower()
-    try:
-        page = urllib.request.urlopen(url)  # connect to website
-    except:
-        item = search(str_)
-        url = item.lower()
-        page = urllib.request.urlopen(url)
-        print("An error occured.")
-
+    url = str_
+    # url_l = "https://www.wikihow.com/" + str_
+    # url = url_l.lower()
     # try:
-    #     content_q = get_object_or_404(Content, url=url)
-    #     content = content_q.content
-    #     return content
+    #     page = urllib.request.urlopen(url)  # connect to website
     # except:
+    #     item = search(str_)
+    #     url = item.lower()
+    #     page = urllib.request.urlopen(url)
 
+    page = urllib.request.urlopen(url)  # connect to website
     soup = BeautifulSoup(page, 'html.parser')
 
     regex = re.compile('^steps')
@@ -70,13 +63,15 @@ def wiki_how_content(str_):
     difference_time = end_time - start_time
     s_time = difference_time.total_seconds()
 
+    url_ = url.replace('https://www.wikihow.com/', '')
+
     if final_text:
-        data_content = Content.objects.create(url_text=str_, content=final_text, scrape_time=s_time, url=url)
+        data_content = Content.objects.create(url_text=url_, user_text=user_text, content=final_text, scrape_time=s_time, url=url)
         data_content.save()
-        return final_text
+        return final_text, url_
     else:
         final_text = None
-        return final_text
+        return final_text, url_
 
 # str_url = "Fill-a-Propane-Tank"
 # print("Time      :", timeit.Timer('f(str_url)', 'from __main__ import str_url,wiki_how_content as f').timeit(1))
