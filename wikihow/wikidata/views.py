@@ -10,6 +10,7 @@ from .serializers import UserSerializer, GroupSerializer
 from .wiki_how_test import wiki_how_content
 from .wiki_how_search import search
 from .wiki_how_image import wiki_how_content as image
+# from .wiki_how_image_test import wiki_how_content as image_test
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -57,9 +58,9 @@ class WikiHowViewSet(viewsets.ViewSet):
                                'Content': content}
                         return Response(ans)
                     except:
-                        content, user_text = wiki_how_content(url, url_)
+                        content, user_text, status_value = image(url, url_)
                         ans = {'status': status.HTTP_200_OK, 'item': 'GET', 'Title': 'How To ' + user_text,
-                               'Content': content}
+                               'status_value': status_value, 'Content': content}
                         return Response(ans)
                 except:
                     content = "Wiki How not found."
@@ -75,17 +76,16 @@ class WikiHowViewSet(viewsets.ViewSet):
             return Response(ans)
 
 
-class WikiHowTestViewSet(viewsets.ViewSet):
-    """
-    API endpoint that allows to get wikihow content
-    """
-
-    def list(self, request):
-        global user_text, item, url
-        # url_ = request.GET.get('url')
-        # url_ = url_.replace(' ', '-')
-
-        content = image('https://www.wikihow.com/Ride-a-Motorcycle')
-
-        ans = {'status': status.HTTP_200_OK, 'item': 'GET', 'Title': 'How To ', 'Content': content}
-        return Response(ans)
+# class WikiHowTestViewSet(viewsets.ViewSet):
+#     """
+#     API endpoint that allows to get wikihow content
+#     """
+#
+#     def list(self, request):
+#         global user_text, item, url
+#         # url_ = request.GET.get('url')
+#         # url_ = url_.replace(' ', '-')
+#
+#         content, status_value = image_test('https://www.wikihow.com/Ride-a-Motorcycle')
+#
+# ans = {'status': status.HTTP_200_OK, 'item': 'GET', 'Title': 'How To ', 'status_value':status_value, 'Content': content} return Response(ans)

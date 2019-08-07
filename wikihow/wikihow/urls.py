@@ -22,7 +22,7 @@ router = routers.DefaultRouter()
 router.register(r'users', wiki_views.UserViewSet)
 router.register(r'groups', wiki_views.GroupViewSet)
 router.register(r'wikihow', wiki_views.WikiHowViewSet, basename='wikihow')
-router.register(r'wikihow_test', wiki_views.WikiHowTestViewSet, basename='wikihow_test')
+# router.register(r'wikihow_test', wiki_views.WikiHowTestViewSet, basename='wikihow_test')
 
 
 urlpatterns = [

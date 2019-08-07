@@ -4,6 +4,8 @@ import urllib.request
 
 from bs4 import BeautifulSoup
 
+from .models import Content
+
 
 def get_text_wiki(lil):
     global ordinal
@@ -54,9 +56,8 @@ def get_step_num_wiki(lil):
     return ordinal
 
 
-def wiki_how_content(str_):
-    # global link_preview_dict
-    global new_dic, link_preview_dict
+def wiki_how_content(str_, user_text):
+    global new_dic, link_preview_dict, method
     start_time = datetime.datetime.now()
     url = str_
 
@@ -67,31 +68,53 @@ def wiki_how_content(str_):
 
     # print(''.join([i.getText() for i in soup.find_all('div', attrs={'class': 'altblock'})]))
     l = [i.getText() for i in soup.find_all('div', attrs={'class': 'altblock'})]
-    print(l)
     content_lis = soup.find_all('li', attrs={'class': regex})
     content = []
     content_dic = []
-    method = 0
+    method1 = 0
+    para = 0
+    status = 1
     for li in content_lis:
+
         step = get_step_num_wiki(li)
-        if step == 'Step 1':
-            method = method + 1
-        # print(method)
-        # print('li=======================', li)
+
         link_preview_dict = {
             'step': step,
             'description': get_text_wiki(li),
             'image': get_image_wiki(li),
         }
+        if para != 0:
+            if step == 'Step 1':
+                method = l[method1].rstrip()
+                if method == 'Method 1':
+                    status = 0
+                method1 += 1
+                new_dic = {method: content}
+                content_dic.append(new_dic)
+                content = []
+
         content.append(link_preview_dict)
-        # print(link_preview_dict)
-        new_dic = {method: link_preview_dict}
-        content_dic.append(new_dic)
+        para += 1
+
+    method = l[method1].rstrip()
+    method1 += 1
+    new_dic = {method: content}
+    content_dic.append(new_dic)
 
     end_time = datetime.datetime.now()
     difference_time = end_time - start_time
     s_time = difference_time.total_seconds()
     print(s_time)
-    return content_dic
+    url_ = url.replace('https://www.wikihow.com/', '')
+
+    if content_dic:
+        data_content = Content.objects.create(url_text=url_, user_text=user_text, content=content_dic,
+                                              scrape_time=s_time, url=url)
+        data_content.save()
+        return content_dic, url_, status
+    else:
+        content_dic = None
+        return content_dic, url_, status
+    # return content_dic
 
 # wiki_how_content('https://www.wikihow.com/Become-a-Psychotherapist')
