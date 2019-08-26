@@ -33,13 +33,19 @@ def get_text_wiki(lil):
 def get_image_wiki(lil):
     global ordinal
     regex1 = re.compile(r'https://www.wikihow.com/images/.*')
-    content_lis1 = lil.find_all('img', attrs={'data-src': regex1})
+    content_lis1 = lil.find_all('video', attrs={'data-poster': regex1})
+    content_lis2 = lil.find_all('img', attrs={'data-src': regex1})
     content = []
-    for li in content_lis1:
-        content.append(li.get('data-src'))
-        ordinal = ' '.join(content)
 
-    # print(content)
+    if content_lis2:
+        for li in content_lis2:
+            content.append(li.get('data-src'))
+            ordinal = ' '.join(content)
+    else:
+        for li in content_lis1:
+            content.append(li.get('data-poster'))
+            ordinal = ' '.join(content)
+
     return ordinal
 
 
