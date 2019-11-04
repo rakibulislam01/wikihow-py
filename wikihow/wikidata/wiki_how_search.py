@@ -1,5 +1,4 @@
 import bs4
-import datetime
 import requests
 
 
@@ -22,14 +21,3 @@ def search(search_term):
         url = link.get('href')
         list_.append(url)
     return list_[0]
-
-
-# while True:
-#     str_ = input("Enter search string: ")
-#     if str_ == 'exit':
-#         break
-#     start_time = datetime.datetime.now()
-#     print(search(str_))
-#     end_time = datetime.datetime.now()
-#     difference_time = end_time - start_time
-#     print(difference_time.total_seconds())
